@@ -1,0 +1,46 @@
+242. Valid Anagram
+Given two strings s and t, write a function to determine if t is an anagram of s.
+For example,
+s = "anagram", t = "nagaram", return true.
+s = "rat", t = "car", return false. 
+Note:
+You may assume the string contains only lowercase alphabets.
+Follow up:
+What if the inputs contain unicode characters? How would you adapt your solution to such case?
+collections.Counter(s) dict subclass for counting hashable objects
+It is useful for count frequency of string! It is very useful in text mining.
+class Solution(object):
+    def isAnagram(self, s, t):
+        """
+        :type s: str
+        :type t: str
+        :rtype: bool
+        """
+        s=list(s)
+        s.sort()
+        t=list(t)
+        t.sort()
+        if s==t:
+            return True
+        else:
+            return False
+#Solution 2, use Hash table
+class Solution(object):
+    def isAnagram(self, s, t):        
+        if len(s)!=len(t):
+            return False
+        n=len(s)
+        ct={}
+        for i in range(n):
+            if s[i] not in ct:
+                ct[s[i]]=1
+            else:
+                ct[s[i]]+=1
+            if t[i] not in ct:
+                ct[t[i]]=-1
+            else:
+                ct[t[i]]-=1
+        for x in ct:
+            if ct[x]:
+                return False
+        return True
