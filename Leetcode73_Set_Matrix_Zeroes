@@ -24,4 +24,23 @@ class Solution(object):
         for j in col:
             for i in range(n):
                 matrix[i][j]=0
-
+C++Version
+class Solution {
+public:
+    void setZeroes(vector<vector<int>>& matrix) {
+        int n=matrix.size(); int m=matrix[0].size();
+        vector<int> row; vector<int> col;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(matrix[i][j]==0){row.push_back(i);col.push_back(j);}
+            }
+        }sort(row.begin(),row.end());
+        auto last = std::unique(row.begin(), row.end());
+        row.erase(last, row.end());
+        sort(col.begin(),col.end());
+        auto lastx = std::unique(col.begin(), col.end());
+        col.erase(lastx, col.end());
+        for(int i=0;i<row.size();i++){for(int j=0;j<m;j++)matrix[row[i]][j]=0;}
+        for(int i=0;i<col.size();i++){for(int j=0;j<n;j++)matrix[j][col[i]]=0;}
+    }
+};
