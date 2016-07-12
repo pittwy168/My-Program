@@ -1,0 +1,33 @@
+LintCode395. Coins in a Line II
+There are n coins with different value in a line. Two players take turns to take one or two coins from left side until there are no more coins left. The player who take the coins with the most value wins.
+Could you please decide the first player will win or lose?
+(Similar questions, if you can choose select the first or the last card, how to decide win or lose)
+Analysis: 
+1.	The user chooses the ith coin with value Vi: The opponent either chooses (i+1)th coin or (i+1)th and (i+2)th coin. The opponent intends to choose the coin which leaves the user with minimum value.
+i.e. The user can collect the value Vi + min(F(i+2), F(i+3) )
+2.	The user chooses the ith and (i+1)th coins with value Vi+Vi+1: The opponent either chooses (i+2)th coin and (i+2)th and (i+3)th coins. The opponent intends to choose the coin which leaves the user with minimum value.
+i.e. The user can collect the value Vi+Vi+1 + min(F(i+3), F(i+4) )
+So F(i)=max(Vi + min(F(i+2), F(i+3) ), Vi+Vi+1 + min(F(i+3), F(i+4) ))
+class Solution:    
+    def firstWillWin(self, values):
+        n,x,sum_v=len(values),0,sum(values)
+        if n==0:
+            x= 0
+        elif n==1:
+            x= values[0]
+        elif n<=3:
+            x= values[0]+values[1]
+        elif n==4:
+            x= values[0]+max(values[1],values[3])
+        else:
+            f=[0 for i in range(n)]
+            f[n-1]=values[n-1]
+            f[n-2]=values[n-1]+values[n-2]
+            f[n-3]=values[n-3]+values[n-2]
+            f[n-4]=values[n-4]+max(values[n-1],values[n-3])
+            for i in range(n-5,-1,-1):
+                f[i]=max(values[i]+min(f[i+2],f[i+3]),values[i]+values[i+1]+min(f[i+3],f[i+4]))
+            x=f[0]
+        if 2*x>sum_v:
+            return True
+        return False
