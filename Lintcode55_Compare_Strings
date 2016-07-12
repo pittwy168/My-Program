@@ -1,0 +1,38 @@
+Compare two strings A and B, determine whether A contains all of the characters in B.
+The characters in string A and B are all Upper Case letters.
+ Notice
+The characters of B in A are not necessary continuous or ordered. 
+#Similar problem: Leetcode242. Valid Anagram
+class Solution:
+    """
+    @param A : A string includes Upper Case letters
+    @param B : A string includes Upper Case letters
+    @return :  if string A contains all of the characters in B return True else return False
+    """
+    def compareStrings(self, A, B):
+        # write your code here
+        n,m=len(A),len(B)
+        if m>n:
+            return False
+        ct={}
+        i=0
+        while i<m:
+            if A[i] not in ct:
+                ct[A[i]]=1
+            else:
+                ct[A[i]]+=1
+            if B[i] not in ct:
+                ct[B[i]]=-1
+            else:
+                ct[B[i]]-=1
+            i+=1
+        while i<n:
+            if A[i] not in ct:
+                ct[A[i]]=1
+            else:
+                ct[A[i]]+=1
+            i+=1
+        for x in ct:
+            if ct[x]<0:
+                return False
+        return True
