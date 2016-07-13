@@ -1,0 +1,28 @@
+Lintcode422_Length of Last Word
+Given a string s consists of upper/lower-case alphabets and empty space characters ' ', return the length of last word in the string.
+If the last word does not exist, return 0.
+ Notice
+A word is defined as a character sequence consists of non-space characters only.
+C++ Solution:
+class Solution {
+public:
+    /**
+     * @param s A string
+     * @return the length of last word
+     */
+    int lengthOfLastWord(string& s) {
+        int n=s.length(); int ct=0; int i=0;
+        while(i<n){
+            if(s[i]!=' ') ct++;
+            else ct=0;
+            i++;
+        } return ct;
+    }
+};
+Python Solution:
+class Solution:
+    def lengthOfLastWord(self, s):
+        st=s.split()
+        if len(st)==0:
+            return 0
+        return len(st[-1])
