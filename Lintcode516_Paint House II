@@ -1,0 +1,14 @@
+LintCode516. Paint House II
+Expand 3 to k
+class Solution:    
+    def minCostII(self, costs):
+        # Write your code here
+        n=len(costs)
+        if n==0:
+            return 0
+        k=len(costs[0])
+        for i in range(1,n):
+            x=min(costs[i-1])
+            for j in range(k):                
+                costs[i][j]+=(x if costs[i-1][j]!=x else min(costs[i-1][:j]+costs[i-1][j+1:] ))
+        return min(costs[n-1])  
