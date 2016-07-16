@@ -1,0 +1,38 @@
+LintCode 514. Paint Fence
+There is a fence with n posts, each post can be painted with one of the k colors.
+You have to paint all the posts such that no more than two adjacent fence posts have the same color.
+Return the total number of ways you can paint the fence.
+class Solution:
+    # @param {int} n non-negative integer, n posts
+    # @param {int} k non-negative integer, k colors
+    # @return {int} an integer, the total number of ways
+    def numWays(self, n, k):
+        # Write your code here
+        if n==0:
+            return 0
+        elif n==1:
+            return k
+        elif n==2:
+            return k*k
+        sa=[1 for i in range(n+1)]
+        di=[1 for i in range(n+1)]
+        sa[2]=k
+        di[2]=k*(k-1)
+        for i in range(3,n+1):
+            sa[i]=di[i-1]
+            di[i]=(k-1)*(sa[i-1]+di[i-1])
+        return sa[n]+di[n]
+#No array used
+class Solution {
+public:    
+    int numWays(int n, int k) {
+        if(n==1) return k;
+        else if(n==2) return k*k;
+        else if(k==1) return 0;
+        int a=k; int b=k*(k-1);
+        for(int i=3;i<(n+1);i++){
+            int x=b;
+            b=(k-1)*(a+b);
+            a=x;
+        }return a+b;}
+};
