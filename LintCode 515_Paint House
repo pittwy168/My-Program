@@ -1,0 +1,31 @@
+LintCode 515. Paint House
+There are a row of n houses, each house can be painted with one of the three colors: red, blue or green. The cost of painting each house with a certain color is different. You have to paint all the houses such that no two adjacent houses have the same color.
+The cost of painting each house with a certain color is represented by a n x 3 cost matrix. For example, costs[0][0] is the cost of painting house 0 with color red; costs[1][2] is the cost of painting house 1 with color green, and so on... Find the minimum cost to paint all houses.
+Example 
+Given costs = [[14,2,11],[11,14,5],[14,3,10]] return 10
+house 0 is blue, house 1 is green, house 2 is blue, 2 + 5 + 3 = 10
+class Solution {
+public:
+    /*** @param costs n x 3 cost matrix
+     * @return an integer, the minimum cost to paint all houses*/
+    int minCost(vector<vector<int>>& costs) {
+        int n=costs.size();
+        if(n==0)return 0;
+        int a=costs[0][0];int b=costs[0][1]; int c=costs[0][2];
+        for(int i=1;i<n;i++){
+            int x=(a>b?b:a);
+            int y=(a>c?c:a);
+            int z=(b>c?c:b);
+            a=z+costs[i][0];
+            b=y+costs[i][1];
+            c=x+costs[i][2];
+        }return ((a>b?b:a)>c?c:(a>b?b:a));}
+}; 
+class Solution:    
+    def minCost(self, costs):
+        if len(costs)==0:
+            return 0
+        a,b,c=costs[0][0], costs[0][1], costs[0][2]
+        for i in range(1,len(costs)):
+            a,b,c=min(b,c)+costs[i][0],min(a,c)+costs[i][1],min(a,b)+costs[i][2]
+        return min(a,b,c)
