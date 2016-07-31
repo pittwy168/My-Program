@@ -1,0 +1,15 @@
+Leetcode50_Pow(x, n)
+class Solution {
+public:
+    double myPow(double x, int n) {
+        bool sign=true;long b=n;
+        if(n==0)return 1;
+        else if(n<0){sign=false;b*=(-1);}
+        double pdt=1.0;
+        while(b>=1){
+            if(b%2==1) pdt*=x;
+            x=x*x;b/=2;
+        }if(sign==false)return 1/pdt;
+        return pdt;
+    }
+};
