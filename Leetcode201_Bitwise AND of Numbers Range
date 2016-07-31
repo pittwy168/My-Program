@@ -1,0 +1,20 @@
+Leetcode201. Bitwise AND of Numbers Range
+Given a range [m, n] where 0 <= m <= n <= 2147483647, return the bitwise AND of all numbers in this range, inclusive.
+For example, given the range [5, 7], you should return 4.
+
+class Solution(object):
+    def rangeBitwiseAnd(self, m, n):
+        x,y,ct=m&n,n-m,1
+        while y>=1:
+            ct,y,x=ct+1,y>>1,x>>1
+        while ct>1:
+            x,ct=x<<1,ct-1
+        return x
+public:
+    int rangeBitwiseAnd(int m, int n) {
+        int x=m&n; int y=m-n; int ct=1;
+        while(y>=1){ct+=1;y/=2;x>>1;}
+        while(ct>1){x<<1;ct-=1;}
+        return x;
+    }
+};
