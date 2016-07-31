@@ -1,0 +1,50 @@
+Lintcode183_木材加工
+有一些原木，现在想把这些木头切割成一些长度相同的小段木头，需要得到的小段的数目至少为 k。当然，我们希望得到的小段越长越好，你需要计算能够得到的小段木头的最大长度。
+ 注意事项
+木头长度的单位是厘米。原木的长度都是正整数，我们要求切割得到的小段木头的长度也要求是整数。无法切出要求至少 k 段的,则返回 0 即可。
+有3根木头[232, 124, 456], k=7, 最大长度为114.
+挑战 
+O(n log Len), Len为 n 段原木中最大的长度
+简单的二分法，C++必须注意整数的溢出。
+class Solution:
+    """
+    @param L: Given n pieces of wood with length L[i]
+    @param k: An integer
+    return: The maximum length of the small pieces.
+    """
+    def woodCut(self, L, k):
+        def cut(L,wl):
+            b=0
+            for i in range(len(L)):
+                b+=(L[i]/wl)
+            return b
+        n=len(L)
+        if n==0 or sum(L)<k:
+            return 0
+        en,st=max(L),1
+        mid,maxl=(en+st)/2,0
+        while en>=st:
+            mid=(en+st)/2
+            if cut(L,mid)>=k:
+                maxl,st=max(maxl,mid),mid+1
+            else:
+                en=mid-1
+        return maxl
+class Solution {
+public:    
+    int woodCut(vector<int> L, int k) {
+        int n=L.size();
+        if(n==0) return 0;
+        int st=1; long long en=0; long long su=0;long long maxl=0;
+        for(int i=0;i<n;i++) {en=(L[i]>en?L[i]:en);su+=L[i];}
+        if(su<k) return 0;
+        int mid=(en+st)/2;
+        while(en>=st){
+            mid=(en+st)/2;
+            int b=0;
+            for(int i=0;i<n;i++) b+=(L[i]/mid);
+            if(b>=k){maxl=(maxl>mid?maxl:mid);st=mid+1;}
+	else en=mid-1;
+        }return maxl;
+    }
+};
