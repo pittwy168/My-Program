@@ -1,0 +1,74 @@
+https://www.luogu.org/problemnew/show/P3906
+//P3906 Geodetic集合
+//Flyod
+#include<bits/stdc++.h>
+using namespace std;
+const int N = 41;
+int n,m,  d[N][N],s,t,kx;
+bool pn[N][N][N];
+
+int main(){
+	cin>>n>>m;
+	for(int i=1;i<=n;i++){
+		for(int j=1;j<=n;j++)
+			d[i][j]=100;
+		d[i][i]=0;
+	}
+	for(int i=1;i<=m;i++){
+		cin>>s>>t;
+		d[s][t]=d[t][s]=1;
+		pn[s][t][s]=1;
+		pn[t][s][t]=1;
+	}
+	for(int k=1;k<=n;k++){
+		for(int i=1;i<=n;i++){
+			for(int j=1;j<=n;j++)
+				if (d[i][j]>d[i][k]+d[k][j]){
+					d[j][i]=d[i][j]= d[i][k]+d[k][j];
+					for(int p=1;p<=n;p++){
+						pn[i][j][p]=pn[k][j][p];
+						pn[j][i][p]=pn[k][i][p];
+					}
+				}
+				else if (d[i][j]==d[i][k]+d[k][j]){
+					for(int p=1;p<=n;p++){
+						pn[i][j][p]|=pn[k][j][p];
+						pn[j][i][p]|=pn[k][i][p];
+					}					
+				}	
+	}
+}
+
+	
+	cin>>kx;
+	for(int i=1;i<=kx;i++){
+		cin>>s>>t;
+		vector<int> a;
+		deque<int> q;
+		bool vis[N];
+		memset(vis,0,sizeof(vis));
+		
+		q.push_back(t);
+		vis[t]=1;
+		while(!q.empty()){
+			int x=q.front();
+			q.pop_front();
+			a.push_back(x);			
+			for(int y=1;y<=n;y++){
+				if(pn[s][x][y]&&!vis[y]){
+					q.push_back(y);
+					vis[y]=1;
+				}
+			}
+	}
+		
+		sort(a.begin(),a.end());
+		for(int j=0;j<a.size();j++)
+			cout<<a[j]<<" ";
+		cout<<endl;		
+	}			
+	return 0;	
+	
+}
+
+
