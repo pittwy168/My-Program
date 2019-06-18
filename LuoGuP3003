@@ -1,0 +1,97 @@
+https://www.luogu.org/problemnew/show/P3003
+
+#include<bits/stdc++.h>
+using namespace std;
+const int MaxN = 100010, MaxM = 200010;
+
+struct edge
+{
+    int to, next;
+	long long dis; 
+};
+
+edge e[2*MaxM];
+int n, m, pb, pa1, pa2, head[MaxN], cnt;
+bool vis[MaxN];
+long long  dis[MaxN];
+
+inline void add_edge( int u, int v, long long d )
+{
+    cnt++;
+    e[cnt].dis = d;
+    e[cnt].to = v;
+    e[cnt].next = head[u];
+    head[u] = cnt;
+
+    cnt++;
+    e[cnt].dis = d;
+    e[cnt].to = u;
+    e[cnt].next = head[v];
+    head[v] = cnt;
+}
+
+struct node
+{
+    long long dis;
+    int pos;
+    bool operator <( const node &x )const
+    {
+        return x.dis < dis;
+    }
+};
+
+
+
+inline void dijkstra(int s)
+{
+    priority_queue<node> q;
+	memset(vis,0, sizeof(vis));
+
+	int ct=0;
+	
+	for(int i = 1; i <= n; ++i)dis[i] = 2000000001;
+	dis[s] = 0;
+    q.push( ( node ){0, s} );
+    while( !q.empty() )
+    {
+        node tmp = q.top();
+        q.pop();
+        int x = tmp.pos; 
+	
+        if( vis[x] )
+            continue;
+        vis[x] = 1;
+        for( int i = head[x]; i; i = e[i].next )
+        {
+            int y = e[i].to;
+            if( dis[y] > dis[x] + e[i].dis )
+            {
+                dis[y] = dis[x] + e[i].dis ;
+                if( !vis[y] )
+                {
+                    q.push( ( node ){dis[y], y} );
+                }
+            }
+        }
+    }
+}
+
+int main()
+{
+    scanf( "%d%d%d%d%d", &m, &n, &pb, &pa1, &pa2 );
+    
+    for( register int i = 0; i < m; ++i )
+    {
+        register int u, v;
+		register long long d;
+        scanf( "%d%d%lld", &u, &v, &d );
+        add_edge( u, v, d );
+    }
+    dijkstra(pb);
+    
+    long long l1=min(dis[pa1],dis[pa2]);
+    
+    dijkstra(pa1);
+    cout<<l1+dis[pa2]<<endl;
+    return 0;
+}
