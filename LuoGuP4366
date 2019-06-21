@@ -1,0 +1,171 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+
+const int MaxN = 100010, MaxM = 200010;
+const long long MX=99999999;
+
+
+struct edge
+
+{
+
+    int to, next;
+
+	long long dis; 
+
+};
+
+
+
+edge e[MaxM+MaxN*20];
+
+int n, m, c,st, tt, head[MaxN], cnt;
+
+bool vis[MaxN];
+
+long long  dis[MaxN];
+
+
+
+inline void add_edge( int u, int v, long long d )
+
+{
+
+    cnt++;
+
+    e[cnt].dis = d;
+
+    e[cnt].to = v;
+
+    e[cnt].next = head[u];
+
+    head[u] = cnt;
+
+}
+
+
+
+struct node
+
+{
+
+    long long dis;
+
+    int pos;
+
+    bool operator <( const node &x )const
+
+    {
+
+        return x.dis < dis;
+
+    }
+
+};
+
+
+inline long long dijkstra()
+
+{
+
+    priority_queue<node> q;
+
+	memset(vis,0, sizeof(vis));
+
+
+
+	int ct=0;
+
+	
+
+	for(int i = 1; i <= n; ++i)dis[i] = MX;
+
+	dis[st] = 0;
+
+    q.push( ( node ){0, st} );
+
+    while( !q.empty() )
+
+    {
+
+        node tmp = q.top();
+
+        q.pop();
+
+        int x = tmp.pos; 
+        
+		if(x==tt) return tmp.dis;
+	
+
+        if( vis[x] )
+
+            continue;
+
+        vis[x] = 1;
+
+        for( int i = head[x]; i; i = e[i].next )
+
+        {
+
+            int y = e[i].to;
+
+            if( dis[y] > dis[x] + e[i].dis )
+
+            {
+
+                dis[y] = dis[x] + e[i].dis ;
+
+                if( !vis[y] )
+
+                {
+
+                    q.push( ( node ){dis[y], y} );
+
+                }
+
+            }
+
+        }
+
+    }
+
+}
+
+
+
+int main()
+
+{
+
+    scanf( "%d%d%d", &n, &m, &c );
+
+    
+
+    for( register int i = 0; i < m; ++i )
+
+    {
+
+        register int u, v;
+
+		register long long d;
+
+        scanf( "%d%d%lld", &u, &v, &d );
+
+        add_edge( u, v, d );
+
+    }
+  //Importnt from 0, as bridge from 1 to 4  
+ for(int i=0;i<=n;i++)
+        for(int j=0;j<20;j++)
+        	if((i^(1<<j))<=n)
+                add_edge(i,i^(1<<j),(1<<j)*c);
+    
+    scanf( "%d%d", &st, &tt);
+
+  
+    cout<< dijkstra()<<endl;
+
+    return 0;
+
+}
