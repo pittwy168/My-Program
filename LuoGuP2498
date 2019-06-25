@@ -1,0 +1,52 @@
+
+
+#include<bits/stdc++.h>
+using namespace std;
+int p[3010], x[3010],y[3010],R,L,m;
+double r;
+
+int find(int i){
+	return p[i]==i?i:p[i]=find(p[i]);	
+}
+
+inline void comb(int x,int y)
+{
+    x=find(p[x]);
+    y=find(p[y]);
+    p[x]=y;
+}
+int cmp(const int i, const int j, double r)
+{return (x[i]-x[j])*(x[i]-x[j])+(y[i]-y[j])*(y[i]-y[j])<=4*r*r;}
+
+bool check(double r){
+	//cout<<r<<endl;	
+	//memset(p,0,sizeof(p));
+	for(int i=1;i<=m+4;i++) p[i]=i;
+	for(int i=1;i<=m;i++){		
+		if(x[i]<=r+1) comb(i,m+2);
+		if(x[i]>=R-r) comb(i,m+4);
+		if(y[i]<=r+1) comb(i,m+1);
+		if(y[i]>=L-r) comb(i,m+3);}	
+	for(int i=1;i<=m-1;i++){
+		for(int j=i+1;j<=m;j++){
+			if(cmp(i,j,r)) comb(i,j);
+			}
+		}	
+	for(int i=0;i<=m+1;i++) p[i]=find(i);
+	if(find(m+1)==find(m+2)||find(m+1)==find(m+3)||find(m+2)==find(m+4)||find(m+3)==find(m+4))	
+		return true;
+	else return false;
+}
+int main(){
+	cin>>m>>R>>L;
+	for(int i=1;i<=m;i++)
+		cin>>x[i]>>y[i];
+	double lt=0, rt=max(R,L);
+	while(rt-lt>1e-3){
+		double mid=(rt+lt)/2;
+		if(check(mid)) rt=mid;
+		else lt=mid;
+	}
+	printf("%.2f",lt);
+	return 0;
+}
