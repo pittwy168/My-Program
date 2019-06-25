@@ -1,0 +1,136 @@
+https://www.luogu.org/problemnew/show/P1491
+//Second shortest route
+
+
+#include<bits/stdc++.h>
+using namespace std;
+const int MaxN = 205, MaxM = 40010;
+
+struct edge
+{
+    int to, next;
+	double dis; 
+};
+
+edge e[MaxM];
+int n, m, x[MaxN], y[MaxN], head[MaxN], cnt, p[MaxN],pa[MaxN];
+bool vis[MaxN];
+double  dis[MaxN];
+
+inline void add_edge( int u, int v, double d )
+{
+    cnt++;
+    e[cnt].dis = d;
+    e[cnt].to = v;
+    e[cnt].next = head[u];
+    head[u] = cnt;
+
+    cnt++;
+    e[cnt].dis = d;
+    e[cnt].to = u;
+    e[cnt].next = head[v];
+    head[v] = cnt;
+}
+
+struct node
+{
+    double dis;
+    int pos;
+    bool operator <( const node &x )const
+    {
+        return x.dis < dis;
+    }
+};
+
+
+
+inline void dijkstra(int s, int t)
+{
+    priority_queue<node> q;
+	memset(vis,0, sizeof(vis));
+	memset(p,0, sizeof(p));
+	
+	int ct=0;
+	
+	for(int i = 1; i <= n; ++i)dis[i] = 2000000001;
+	dis[s] = 0;
+    q.push( ( node ){0, s} );
+    while( !q.empty() )
+    {
+        node tmp = q.top();
+        q.pop();
+        int x = tmp.pos; 
+		
+		if(x==t) return;
+		
+        if( vis[x] )
+            continue;
+        vis[x] = 1;
+        for( int i = head[x]; i; i = e[i].next )
+        {
+            int y = e[i].to;
+            if( dis[y] > dis[x] + e[i].dis )
+            {
+                p[y]=x;
+				dis[y] = dis[x] + e[i].dis ;
+                if( !vis[y] )
+                {
+                    q.push( ( node ){dis[y], y} );
+                }
+            }
+        }
+    }
+}
+
+int main()
+{
+    scanf( "%d%d", &n, &m);
+    for(int i=1;i<=n;i++) scanf( "%d%d", &x[i], &y[i]);
+    
+    for( register int i = 0; i < m; ++i )
+    {
+        register int u, v;		
+        scanf( "%d%d", &u, &v);
+        double d=sqrt((x[u]-x[v])*(x[u]-x[v])+(y[u]-y[v])*(y[u]-y[v]));
+        add_edge( u, v, d );
+    }
+    dijkstra(1,n);
+    for(int i=1;i<=n;i++) pa[i]=p[i];    
+    
+    double second=2000000001;
+    int tt=n;
+    while(tt!=1){
+		int st=pa[tt];
+		double temp;
+		for( int i = head[tt]; i; i = e[i].next ){
+			if(e[i].to==st) {
+				temp=e[i].dis;
+				e[i].dis=2000000001;
+			}
+		}
+		for( int i = head[st]; i; i = e[i].next ){
+			if(e[i].to==tt) {				
+				e[i].dis=2000000001;
+			}
+		}
+					
+    	dijkstra(1,n);
+    	second=min(second, dis[n]);
+    	
+		for( int i = head[tt]; i; i = e[i].next ){
+			if(e[i].to==st) {				
+				e[i].dis=temp;
+			}
+		}
+		for( int i = head[st]; i; i = e[i].next ){
+			if(e[i].to==tt) {				
+				e[i].dis=temp;
+			}
+		}
+		tt=st;			
+	}
+    
+    if(second>=2000000001) cout<<-1<<endl;
+    else printf("%.2f",second);
+    return 0;
+}
