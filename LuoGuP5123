@@ -1,0 +1,50 @@
+
+#include <bits/stdc++.h>
+#define ULL unsigned long long
+#define M 13331
+using namespace std;
+
+map<ULL, ULL> d1,d2,d3,d4,d5;
+
+
+ULL n,ans,a[5],hs;
+
+int main(){
+	cin>>n;
+	for(int i=1;i<=n;i++){
+		for(int j=0;j<5;j++)
+			cin>>a[j];
+		sort(a,a+5);
+		for(int i1=0;i1<5;i1++){
+			ans+=d1[a[i1]];
+			d1[a[i1]]++;			
+		}
+		for(int i1=0;i1<5;i1++)
+			for(int i2=i1+1;i2<5;i2++){
+				hs=a[i1]*M+a[i2];
+				ans-=d2[hs];
+				d2[hs]++;			
+		}		
+		for(int i1=0;i1<5;i1++)
+			for(int i2=i1+1;i2<5;i2++)
+				for(int i3=i2+1;i3<5;i3++){
+					hs=a[i1]*M*M+a[i2]*M+a[i3];
+					ans+=d3[hs];
+					d3[hs]++;			
+		}					
+		for(int i1=0;i1<5;i1++)
+			for(int i2=i1+1;i2<5;i2++)
+				for(int i3=i2+1;i3<5;i3++)
+					for(int i4=i3+1;i4<5;i4++){
+						hs=a[i1]*M*M*M+a[i2]*M*M+a[i3]*M+a[i4];
+						ans-=d4[hs];
+						d4[hs]++;			
+		}
+		hs=a[0]*M*M*M*M+a[1]*M*M*M+a[2]*M*M+a[3]*M+a[4];
+		ans+=d5[hs];
+		d5[hs]++;
+								
+	}
+	cout<<n*(n-1)/2-ans<<endl;
+	return 0;
+}
