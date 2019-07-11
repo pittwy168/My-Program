@@ -1,5 +1,8 @@
 https://www.luogu.org/problemnew/show/P1347
+题解：该题是典型的拓扑排序问题，
 
+
+代码：
 #include<bits/stdc++.h>
 using namespace std;
 
