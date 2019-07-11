@@ -1,0 +1,88 @@
+https://www.luogu.org/problemnew/show/P1347
+
+#include<bits/stdc++.h>
+using namespace std;
+
+int n,m, cnt, head[30],r[30],c[30],r1[30],c1[30],cha[30],maxch,pha[30];
+struct edge{
+	int to, next;
+} e[900];
+char s[4];
+inline void add_edge( int u, int v )
+{
+    cnt++;    
+    e[cnt].to = v;
+    e[cnt].next = head[u];
+    head[u] = cnt;
+}
+
+inline int top_sort(){
+	memset(cha,0,sizeof(cha));
+	memset(pha,0,sizeof(pha));
+	memset(r1,0,sizeof(r1));
+	memset(c1,0,sizeof(c1));
+	maxch=0;
+	deque<int> q;
+	q.clear();
+	int ans=0;
+	
+	for(int i=1;i<=n;i++){
+		r1[i]=r[i];
+		c1[i]=c[i];
+		if(r1[i]==0) {
+			q.push_back(i);
+			ans++;
+			cha[i]=1;
+			pha[1]=i;
+		}
+	}
+	while(!q.empty()){
+		int p=q.front();
+		q.pop_front();
+		for(int i=head[p];i;i=e[i].next){
+			int y=e[i].to;
+			cha[y]=max(cha[y],cha[p]+1);
+			pha[cha[y]]=y;
+			maxch=max(maxch,cha[y]);			
+			r1[y]--;
+			if(r1[y]==0) {
+				q.push_back(y);
+				ans++;
+			}
+		}		
+	}
+	if(ans<n) return -1;
+	if(maxch==n) return 1;
+	else return 0;	
+}
+
+int main(){
+	cin>>n>>m;
+	int idx=0;
+	while(idx<m){
+		idx++;		
+		cin>>s;
+		int u=s[0]-'A'+1, v=s[2]-'A'+1;
+		//cout<<u<<" "<<v<<endl;		
+		c[u]++;
+		r[v]++;
+		add_edge(u,v);
+		int t=top_sort();
+		if (t==-1) {
+			cout<<"Inconsistency found after "<<idx<<" relations."<<endl;
+			return 0;
+		}
+		else if(t==1){
+			cout<<"Sorted sequence determined after "<<idx<<" relations: ";
+			for(int j=1;j<=n;j++){
+				char sx=pha[j]-1+'A';
+				cout<<sx;
+			}
+			cout<<"."<<endl;
+			return 0;	
+		}
+		else continue;
+	}
+	cout<<"Sorted sequence cannot be determined."<<endl;
+	return 0;
+}
