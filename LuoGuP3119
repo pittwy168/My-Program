@@ -1,0 +1,138 @@
+//Tarjan, SPFA
+
+#include<bits/stdc++.h>
+using namespace std;
+const int N=100005;
+
+int n,m,dfn[N],low[N],num,top, s[N],start,c[N],grass[N],color;
+int dis1[N],dis2[N];
+bool use[N];
+
+int sum,nxt[N],h[N],r[N];
+int sum1,nxt1[N],h1[N],r1[N];
+int sum2,nxt2[N],h2[N],r2[N];
+
+inline void add_edge(int a,int b){
+	sum++;
+	nxt[sum]=h[a];
+	r[sum]=b;
+	h[a]=sum;
+}
+
+inline void found(int k) {
+	dfn[k]=low[k]=++num;
+	s[++top]=k;
+	use[k]=1;
+	for(int i=h[k];i;i=nxt[i]){
+    	int v=r[i];
+    	if(!dfn[v]){
+			found(v);
+			low[k]=min(low[k],low[v]);
+		}	
+    	else if(use[v])
+			low[k]=min(low[k],low[v]);
+	}   
+	if(low[k]==dfn[k]){
+    	c[k]=++color;
+		use[k]=0;
+    	grass[color]=1;
+    	while(s[top]!=k){
+			grass[color]++;
+			use[s[top]]=0;
+			c[s[top--]]=c[k];}
+        top--;
+	}
+}
+
+inline void add1(int a,int b){
+	sum1++;
+	nxt1[sum1]=h1[a];
+	r1[sum1]=b;
+	h1[a]=sum1;
+}
+	
+inline void add2(int a,int b){
+	sum2++;
+	nxt2[sum2]=h2[a];
+	r2[sum2]=b;
+	h2[a]=sum2;
+}
+
+void spfa1(int k)
+{
+    dis1[k]=grass[k];
+    queue<int> Q;
+    Q.push(k);
+    while(!Q.empty()){
+        int now=Q.front();
+		Q.pop();
+        for(int i=h1[now];i;i=nxt1[i]){
+            int v=r1[i];
+            if(dis1[v]<dis1[now]+grass[v]){
+                dis1[v]=dis1[now]+grass[v];
+                if(!use[v])
+					Q.push(v),use[v]=1;
+            }
+        }
+                use[now]=0;
+    }
+}
+
+void spfa2(int k)
+{ 
+    dis2[k]=grass[k];
+    queue<int> Q;
+    Q.push(k);
+    while(!Q.empty()){
+        int now=Q.front();
+		Q.pop();
+        for(int i=h2[now];i;i=nxt2[i]){
+            int v=r2[i];
+            if(dis2[v]<dis2[now]+grass[v]){
+                dis2[v]=dis2[now]+grass[v];
+                if(!use[v])
+					Q.push(v),use[v]=1;
+            }
+        }
+        use[now]=0;
+    }
+}
+
+int main(){
+	cin>>n>>m;
+	for(int i=1;i<=m;i++){
+		int u,v;
+		cin>>u>>v;
+		add_edge(u,v);
+	} 
+	
+	for(int i=1;i<=n;i++)
+		if(!dfn[i])
+			found(i);
+			
+	start=c[1];
+	for(int i=1;i<=n;i++)
+		for(int u=h[i];u;u=nxt[u])
+			if(c[i]!=c[r[u]]){
+				add1(c[i],c[r[u]]);
+				add2(c[r[u]],c[i]);
+			}
+				
+	spfa1(start);
+	spfa2(start);
+	
+	int ans=grass[start];
+	for(int i=1;i<=n;i++)
+    	if(!use[c[i]]&&dis1[c[i]]){
+    		int now=c[i];
+    		use[now]=1;
+    		for(int u=h2[now];u;u=nxt2[u]){
+        		int v=r2[u];
+        		if(!dis2[v])
+					continue;
+        		ans=max(ans,dis1[now]+dis2[v]-grass[start]);
+    	}
+    }
+    cout<<ans<<endl;
+	return 0;
+}
