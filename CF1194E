@@ -1,0 +1,62 @@
+
+
+#include<bits/stdc++.h>
+#include <bitset>
+using namespace std;
+const int MAXN=5005;
+
+bitset<MAXN> f[MAXN];
+int n,ct1,ct2,a1,a2,b1,b2;
+
+struct hor{
+	int ay,ax1,ax2;
+} H[MAXN];
+
+struct vet{
+	int ax, ay1,ay2;
+} V[MAXN];
+
+int main(){
+	cin>>n;
+	for(int i=1;i<=n;i++){
+		cin>>a1>>b1>>a2>>b2;
+		if(b1==b2)
+			H[ct1++]={b1,min(a1,a2),max(a1,a2)};
+		else if(a1==a2)
+			V[ct2++]={a1,min(b1,b2),max(b1,b2)};
+	}
+	if(ct1<=ct2){
+
+	for(int i=0;i<ct1;i++)
+		for(int j=0;j<ct2;j++){
+			if(V[j].ax>=H[i].ax1&&V[j].ax<=H[i].ax2&&H[i].ay>=V[j].ay1&&H[i].ay<=V[j].ay2)
+				f[i][j]=1;
+		}
+	long long ans=0;
+	for(int i=0;i<ct1;i++)
+		for(int j=i+1;j<ct1;j++){
+			//bitset<MAXN> b=f[i]&f[j];
+			long long c=(f[i]&f[j]).count();
+			ans+=c*(c-1)/2;			
+		}
+	cout<<ans<<endl;	
+	}
+	
+	else if(ct1>ct2){
+
+	for(int i=0;i<ct2;i++)
+		for(int j=0;j<ct1;j++){
+			if(V[i].ax>=H[j].ax1&&V[i].ax<=H[j].ax2&&H[j].ay>=V[i].ay1&&H[j].ay<=V[i].ay2)
+				f[i][j]=1;
+		}
+	long long ans=0;
+	for(int i=0;i<ct2;i++)
+		for(int j=i+1;j<ct2;j++){
+			//bitset<MAXN> b=f[i]&f[j];
+			long long c=(f[i]&f[j]).count();
+			ans+=c*(c-1)/2;			
+		}
+	cout<<ans<<endl;	
+	}
+	return 0;	
+}
