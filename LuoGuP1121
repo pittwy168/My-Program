@@ -1,0 +1,64 @@
+LuoGuP1121
+题目描述
+给出一段环状序列，即认为A_1A 
+1
+​	 和A_NA 
+N
+​	 是相邻的，选出其中连续不重叠且非空的两段使得这两段和最大。
+
+输入格式
+第一行是一个正整数N(N\le 2\times 10^{5})N(N≤2×10 
+5
+ )，表示了序列的长度。
+
+第二行包含NN个绝对值不大于1000010000的整数A_iA 
+i
+​	 ，描述了这段序列，第一个数和第NN个数是相邻的。
+
+输出格式
+一个整数，为最大的两段子段和是多少。
+
+#include<bits/stdc++.h>
+using namespace std;
+const int N=2e5+10;
+int n, a1[N],a[N],s,f[N],g[N],g1[N],g2[N],g3[N],g4[N],mx1,mn1,ct=0;
+inline void solve(){
+	memset(f,0,sizeof(f));
+	memset(g,0,sizeof(g));
+	for(int i=1;i<=n;i++){
+		f[i]=max(f[i-1]+a[i],a[i]);
+		g[i]=max(g[i-1],f[i]);
+	}
+}
+int main(){
+	cin>>n;
+	for(int i=1;i<=n;i++){
+		cin>>a1[i];a[i]=a1[i];s+=a[i];
+		if(a[i]>=0) ct++;
+	}
+	solve();
+	for(int i=1;i<=n;i++) g1[i]=g[i];
+	reverse(a+1,a+n+1);
+	solve();
+	for(int i=1;i<=n;i++) g2[n+1-i]=g[i];	
+	mx1=max(s,g1[n]);
+	for(int i=1;i<n;i++) mx1=max(mx1,g1[i]+g2[i+1]);
+		
+	for(int i=1;i<=n;i++) a[i]=-a[i];
+	solve();
+	for(int i=1;i<=n;i++) g3[n+1-i]=g[i];
+	reverse(a+1,a+n+1);
+	solve();
+	for(int i=1;i<=n;i++) g4[i]=g[i];
+	mn1=max(-s,g3[n]);
+	for(int i=1;i<n;i++) mn1=max(mn1,g3[i]+g4[i+1]);
+	
+	if(ct>=2)	
+		cout<<max(mx1,s+mn1)<<endl;
+	else if(ct<2){
+		sort(a1+1,a1+n+1);
+		cout<<a1[n]+a1[n-1]<<endl;
+	}
+	
+	return 0;
+}
