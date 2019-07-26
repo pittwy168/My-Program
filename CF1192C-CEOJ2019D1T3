@@ -1,0 +1,82 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long LL;
+const LL MOD=998244353; 
+int n,w;
+string s;
+map<string, bool> MX;
+LL ans,a[11][65][65],dp[65][65][65]; 
+ 
+bool check_p(string s1){
+	int m=s1.size();
+	bool fg=false;
+	for(int i=0;i<m;i++){
+		if(s1[i]!=s1[m-1-i]) fg=true;
+	}
+	if(fg==true) return false;
+	else return true;		
+}
+ 
+string reverse(string s1){
+	int m=s1.size();
+	int st=0, ed=m-1;
+	while(st<ed){
+		swap(s1[st],s1[ed]);
+		st++,ed--;
+	}
+	return s1;
+}
+ 
+inline int trans(char c){
+	if(c>='a'&&c<='z') return c-'a'+1;
+	if(c>='A'&&c<='Z') return c-'A'+27;
+	if(c>='0'&&c<='9') return c-'0'+53;
+} 
+int main(){
+	cin>>n;
+	for(int i=1;i<=n;i++){
+		cin>>s;				
+		if(MX[s]==false){
+			MX[s]=true;
+			MX[reverse(s)]=true;
+	
+		int m1=s.size();
+		int sx=trans(s[0]), ex=trans(s[m1-1]);		
+		w=max(w,sx);
+		w=max(w,ex);
+		if(check_p(s)==true) a[m1][sx][ex]++;
+		else{
+			a[m1][sx][ex]++;
+			a[m1][ex][sx]++;
+		}
+	}
+	else if (MX[s]==true) continue;
+}
+	for(int i=3;i<=10;i++){
+		memset(dp,0,sizeof(dp));		
+		for(int a1=1;a1<=w;a1++)
+		for(int a2=1;a2<=w;a2++)
+		for(int a3=1;a3<=a2;a3++)
+		for(int a4=1;a4<=a3;a4++){		
+			dp[a2][a3][a4]=(dp[a2][a3][a4]+a[i][a1][a2]*a[i][a1][a3]%MOD*a[i][a1][a4]%MOD)%MOD;
+		}	
+		
+		for(int b1=1;b1<=w;b1++)
+		for(int b2=1;b2<=b1;b2++)
+		for(int b3=1;b3<=b2;b3++)
+		for(int b4=1;b4<=b3;b4++){
+			LL tmp=dp[b1][b2][b3]*dp[b1][b2][b4]%MOD*dp[b1][b3][b4]%MOD*dp[b2][b3][b4]%MOD;
+			int c1=b1-b2, c2=b2-b3,c3=b3-b4, c=0;
+			if(c1) c++;
+			if(c2) c++;
+			if(c3) c++;
+			if(c==3) tmp=(24*tmp)%MOD;
+			else if(c==2) tmp=(12*tmp)%MOD;
+			else if(c==1&&c2>0) tmp=(6*tmp)%MOD;
+			else if(c==1&&c2==0) tmp=(4*tmp)%MOD;			
+			ans=(ans+tmp)%MOD;
+		}
+}
+	cout<<ans<<endl;
+	return 0;			
+}
